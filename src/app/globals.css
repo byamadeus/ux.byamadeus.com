@@ -32,8 +32,8 @@ mux-player {
   overflow: hidden;
 }
 
-/* When used as full-bleed fill (story bg, etc) */
-mux-player[style*="position: absolute"] {
+/* Full-bleed story context — no radius, no intrinsic aspect ratio */
+.story-mux mux-player {
   aspect-ratio: unset;
   border-radius: 0;
 }
