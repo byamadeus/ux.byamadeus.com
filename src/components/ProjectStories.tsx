@@ -6,29 +6,29 @@ import MuxPlayer from "@mux/mux-player-react";
 
 export interface StoryVideo {
   type: "local" | "youtube" | "vimeo" | "mux" | "iframe";
-  src: string;         // playback ID for mux, video ID for youtube/vimeo, URL for local/iframe
-  fit?: "cover" | "contain"; // default: cover. "contain" for portrait/mobile recordings
-  aspectRatio?: string;      // e.g. "9/16" (default when contain), "4/3", "16/9"
-  thumbnail?: string;        // override blurred bg image URL (auto-derived for mux/youtube)
+  src: string;
+  fit?: "cover" | "contain";
+  aspectRatio?: string;
+  thumbnail?: string;
 }
 
 export interface Story {
   id: string;
   title: string;
-  subtitle?: string;   // shown with LOG: prefix
-  url?: string;        // shown as Visit link
+  subtitle?: string;
+  url?: string;
   tags?: string[];
-  progress?: number;   // 0-100
-  gradient?: string;   // CSS gradient, bg fallback
+  progress?: number;
+  gradient?: string;
   video?: StoryVideo;
-  duration?: number;   // ms before auto-advance
+  duration?: number;
 }
 
 interface ProjectStoriesProps {
   stories: Story[];
   defaultDuration?: number;
   onClose?: () => void;
-  paused?: boolean; // external pause — stops timer without showing pause UI
+  paused?: boolean;
 }
 
 function deriveThumbnail(video: StoryVideo): string | null {
@@ -38,37 +38,36 @@ function deriveThumbnail(video: StoryVideo): string | null {
   return null;
 }
 
-function VideoPlayer({ video, gradient }: { video: StoryVideo; gradient?: string }) {
-  const [loaded, setLoaded] = useState(false);
+function VideoPlayer({
+  video,
+  gradient,
+  onLoaded,
+}: {
+  video: StoryVideo;
+  gradient?: string;
+  onLoaded?: () => void;
+}) {
+  const muxRef = useRef<HTMLVideoElement & { muted: boolean }>(null);
   const fallbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // iOS Safari often skips canplay/load events for HLS streams.
-    // Reveal video after 2.5s regardless so it doesn't stay invisible.
-    fallbackRef.current = setTimeout(() => setLoaded(true), 2500);
+    // iOS Safari: set muted imperatively — React doesn't always write the HTML attribute
+    if (muxRef.current) muxRef.current.muted = true;
+
+    // Fallback: reveal + signal ready after 3s regardless of events
+    fallbackRef.current = setTimeout(() => onLoaded?.(), 3000);
     return () => { if (fallbackRef.current) clearTimeout(fallbackRef.current); };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const contain = video.fit === "contain";
   const aspectRatio = video.aspectRatio ?? (contain ? "9/16" : "16/9");
   const thumbnail = contain ? deriveThumbnail(video) : null;
 
   const abs: React.CSSProperties = {
-    position: "absolute",
-    inset: 0,
-    width: "100%",
-    height: "100%",
-    border: "none",
-    pointerEvents: "none",
-    display: "block",
+    position: "absolute", inset: 0, width: "100%", height: "100%",
+    border: "none", pointerEvents: "none", display: "block",
   };
 
-  const fade: React.CSSProperties = {
-    opacity: loaded ? 1 : 0,
-    transition: "opacity 0.5s ease",
-  };
-
-  // Blurred background — for contain mode, always shown; fades out as video loads
   const blurredBg = contain ? (
     <div style={{ ...abs, overflow: "hidden" }}>
       {thumbnail ? (
@@ -76,11 +75,8 @@ function VideoPlayer({ video, gradient }: { video: StoryVideo; gradient?: string
           src={thumbnail}
           alt=""
           style={{
-            width: "110%",
-            height: "110%",
-            objectFit: "cover",
-            marginLeft: "-5%",
-            marginTop: "-5%",
+            width: "110%", height: "110%", objectFit: "cover",
+            marginLeft: "-5%", marginTop: "-5%",
             filter: "blur(28px) brightness(0.42) saturate(1.4)",
           }}
         />
@@ -90,34 +86,42 @@ function VideoPlayer({ video, gradient }: { video: StoryVideo; gradient?: string
     </div>
   ) : null;
 
-  const mediaStyle: React.CSSProperties = { width: "100%", height: "100%", border: "none", pointerEvents: "none", display: "block" };
+  const mediaStyle: React.CSSProperties = {
+    width: "100%", height: "100%", border: "none", pointerEvents: "none", display: "block",
+  };
+
+  function markLoaded() {
+    if (fallbackRef.current) { clearTimeout(fallbackRef.current); fallbackRef.current = null; }
+    onLoaded?.();
+  }
 
   function renderMedia() {
     if (video.type === "local") {
       return (
         <video
           src={video.src}
-          autoPlay
-          muted
-          loop
-          playsInline
-          onLoadedMetadata={() => setLoaded(true)}
-          onCanPlay={() => setLoaded(true)}
-          style={{ ...mediaStyle, objectFit: "cover", ...fade }}
+          autoPlay muted loop playsInline
+          preload="auto"
+          onLoadedMetadata={markLoaded}
+          onCanPlay={markLoaded}
+          style={{ ...mediaStyle, objectFit: "cover" }}
         />
       );
     }
     if (video.type === "mux") {
       return (
         <MuxPlayer
+          ref={muxRef as React.RefObject<HTMLVideoElement>}
           playbackId={video.src}
+          streamType="on-demand"
           autoPlay="muted"
           muted
           loop
           playsInline
-          onLoadedMetadata={() => setLoaded(true)}
-          onCanPlay={() => setLoaded(true)}
-          style={{ ...mediaStyle, ...fade }}
+          preload="auto"
+          onLoadedMetadata={markLoaded}
+          onCanPlay={markLoaded}
+          style={mediaStyle}
         />
       );
     }
@@ -131,8 +135,8 @@ function VideoPlayer({ video, gradient }: { video: StoryVideo; gradient?: string
       <iframe
         src={src}
         allow="autoplay; encrypted-media"
-        onLoad={() => setLoaded(true)}
-        style={{ ...mediaStyle, ...fade }}
+        onLoad={markLoaded}
+        style={mediaStyle}
       />
     );
   }
@@ -142,14 +146,16 @@ function VideoPlayer({ video, gradient }: { video: StoryVideo; gradient?: string
       <>
         {blurredBg}
         <div style={{ ...abs, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", aspectRatio, position: "relative", overflow: "hidden", flexShrink: 0 }}>
+          <div style={{
+            maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto",
+            aspectRatio, position: "relative", overflow: "hidden", flexShrink: 0,
+          }}>
             {renderMedia()}
           </div>
         </div>
       </>
     );
   }
-
   return <div style={abs}>{renderMedia()}</div>;
 }
 
@@ -171,10 +177,16 @@ function ProgressBar({ progress }: { progress: number }) {
   );
 }
 
-export function ProjectStories({ stories, defaultDuration = 5000, onClose, paused: externalPaused = false }: ProjectStoriesProps) {
+export function ProjectStories({
+  stories,
+  defaultDuration = 5000,
+  onClose,
+  paused: externalPaused = false,
+}: ProjectStoriesProps) {
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
   const [animKey, setAnimKey] = useState(0);
+  const [videoReady, setVideoReady] = useState(!stories[0]?.video);
 
   const idxRef = useRef(0);
   idxRef.current = idx;
@@ -197,8 +209,8 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose, pause
     if (newIdx >= stories.length) { onClose?.(); return; }
     if (newIdx < 0) return;
     clearTimer();
-    remainingRef.current = stories[newIdx].duration ?? defaultDuration;
-    startRef.current = Date.now();
+    const hasVideo = !!stories[newIdx].video;
+    setVideoReady(!hasVideo);
     setIdx(newIdx);
     setAnimKey((k) => k + 1);
   }
@@ -210,18 +222,18 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose, pause
     timerRef.current = setTimeout(() => { goTo(idxRef.current + 1); }, remaining);
   }
 
+  // Start timer only when video is ready
   useEffect(() => {
-    pausedRef.current = false;
-    setPaused(false);
+    if (!videoReady || externalPaused) return;
     remainingRef.current = duration;
     startTimer(duration);
     return clearTimer;
-  }, [idx]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [videoReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (externalPaused) {
       clearTimer();
-    } else {
+    } else if (videoReady) {
       startTimer(remainingRef.current);
     }
   }, [externalPaused]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -255,13 +267,11 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose, pause
     const downTime = downTimeRef.current ?? Date.now();
     const held = Date.now() - downTime > 150;
     downTimeRef.current = null;
-
     if (held) {
       resumeStory();
     } else {
       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      if (x < rect.width / 3) goTo(idxRef.current - 1);
+      if (e.clientX - rect.left < rect.width / 3) goTo(idxRef.current - 1);
       else goTo(idxRef.current + 1);
     }
   }
@@ -287,10 +297,15 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose, pause
         style={{ background: story.gradient ?? "linear-gradient(150deg, #1a1a2e 0%, #16213e 100%)" }}
       />
 
-      {/* Video layer */}
+      {/* Video layer — always opacity 1, gradient shows through until video fires onLoaded */}
       {story.video && (
-        <div className="absolute inset-0">
-          <VideoPlayer key={story.video.src} video={story.video} gradient={story.gradient} />
+        <div className="absolute inset-0" style={{ opacity: videoReady ? 1 : 0, transition: "opacity 0.5s ease" }}>
+          <VideoPlayer
+            key={story.video.src}
+            video={story.video}
+            gradient={story.gradient}
+            onLoaded={() => setVideoReady(true)}
+          />
         </div>
       )}
 
@@ -306,7 +321,8 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose, pause
           {stories.map((_, i) => (
             <div key={i} className="flex-1 h-[2px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.28)" }}>
               {i < idx && <div className="h-full w-full rounded-full bg-white" />}
-              {i === idx && (
+              {/* Only animate when video is ready */}
+              {i === idx && videoReady && !externalPaused && (
                 <div
                   key={animKey}
                   className="h-full rounded-full bg-white"
@@ -333,8 +349,7 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose, pause
       </div>
 
       {/* Bottom content */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-10 pt-20 flex flex-col gap-2.5">
-        {/* Tags */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 px-6 pb-10 pt-20 flex flex-col gap-2.5 items-start">
         {story.tags && story.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-0.5">
             {story.tags.map((tag) => (
@@ -349,16 +364,14 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose, pause
           </div>
         )}
 
-        {/* Title */}
-        <h2 className="text-4xl font-semibold text-white leading-tight tracking-tight text-left">
+        <h2 className="text-4xl font-semibold text-white leading-tight tracking-tight text-left w-full">
           {story.title}
         </h2>
 
-        {/* Log entry + Visit link — same row */}
         {(story.subtitle || story.url) && (
-          <div className="flex items-baseline justify-between gap-4">
+          <div className="flex items-start justify-between gap-4 w-full">
             {story.subtitle && (
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
+              <p className="text-sm leading-relaxed text-left" style={{ color: "rgba(255,255,255,0.55)" }}>
                 <span
                   className="font-mono tracking-widest mr-2"
                   style={{ fontSize: "9px", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}
@@ -384,9 +397,8 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose, pause
           </div>
         )}
 
-        {/* Progress bar */}
         {story.progress !== undefined && (
-          <div className="mt-1">
+          <div className="mt-1 w-full">
             <ProgressBar progress={story.progress} />
           </div>
         )}
