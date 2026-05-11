@@ -47,14 +47,15 @@ function VideoPlayer({
   gradient?: string;
   onLoaded?: () => void;
 }) {
-  const muxRef = useRef<HTMLVideoElement & { muted: boolean }>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const fallbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // iOS Safari: set muted imperatively — React doesn't always write the HTML attribute
-    if (muxRef.current) muxRef.current.muted = true;
+    // iOS Safari: React's muted prop doesn't always set the HTML attribute.
+    // Find the underlying <video> and set it imperatively.
+    const vid = containerRef.current?.querySelector("video");
+    if (vid) vid.muted = true;
 
-    // Fallback: reveal + signal ready after 3s regardless of events
     fallbackRef.current = setTimeout(() => onLoaded?.(), 3000);
     return () => { if (fallbackRef.current) clearTimeout(fallbackRef.current); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -110,19 +111,20 @@ function VideoPlayer({
     }
     if (video.type === "mux") {
       return (
-        <MuxPlayer
-          ref={muxRef as React.RefObject<HTMLVideoElement>}
-          playbackId={video.src}
-          streamType="on-demand"
-          autoPlay="muted"
-          muted
-          loop
-          playsInline
-          preload="auto"
-          onLoadedMetadata={markLoaded}
-          onCanPlay={markLoaded}
-          style={mediaStyle}
-        />
+        <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
+          <MuxPlayer
+            playbackId={video.src}
+            streamType="on-demand"
+            autoPlay="muted"
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onLoadedMetadata={markLoaded}
+            onCanPlay={markLoaded}
+            style={mediaStyle as React.CSSProperties & Record<string, string>}
+          />
+        </div>
       );
     }
     let src = video.src;
