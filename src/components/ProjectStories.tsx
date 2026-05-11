@@ -28,6 +28,7 @@ interface ProjectStoriesProps {
   stories: Story[];
   defaultDuration?: number;
   onClose?: () => void;
+  paused?: boolean; // external pause — stops timer without showing pause UI
 }
 
 function deriveThumbnail(video: StoryVideo): string | null {
@@ -170,7 +171,7 @@ function ProgressBar({ progress }: { progress: number }) {
   );
 }
 
-export function ProjectStories({ stories, defaultDuration = 5000, onClose }: ProjectStoriesProps) {
+export function ProjectStories({ stories, defaultDuration = 5000, onClose, paused: externalPaused = false }: ProjectStoriesProps) {
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
   const [animKey, setAnimKey] = useState(0);
@@ -204,6 +205,7 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose }: Pro
 
   function startTimer(remaining: number) {
     clearTimer();
+    if (externalPaused) return;
     startRef.current = Date.now();
     timerRef.current = setTimeout(() => { goTo(idxRef.current + 1); }, remaining);
   }
@@ -215,6 +217,14 @@ export function ProjectStories({ stories, defaultDuration = 5000, onClose }: Pro
     startTimer(duration);
     return clearTimer;
   }, [idx]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (externalPaused) {
+      clearTimer();
+    } else {
+      startTimer(remainingRef.current);
+    }
+  }, [externalPaused]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function pauseStory() {
     if (pausedRef.current) return;

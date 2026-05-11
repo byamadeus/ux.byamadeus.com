@@ -79,7 +79,7 @@ export function ProjectDrawer() {
           style={{ opacity: open ? 1 : 0 }}
         />
 
-        {/* Story panel */}
+        {/* Story panel — always mounted so iOS autoplay window isn't missed */}
         <div
           className="absolute inset-x-0 bottom-0 overflow-hidden"
           style={{
@@ -89,13 +89,12 @@ export function ProjectDrawer() {
             transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
-          {open && (
-            <ProjectStories
-              stories={STORIES}
-              defaultDuration={6000}
-              onClose={() => setOpen(false)}
-            />
-          )}
+          <ProjectStories
+            stories={STORIES}
+            defaultDuration={6000}
+            onClose={() => setOpen(false)}
+            paused={!open}
+          />
         </div>
       </div>
     </>
