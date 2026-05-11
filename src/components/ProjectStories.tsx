@@ -318,7 +318,7 @@ export function ProjectStories({
 
       {/* Video layer */}
       {story.video && (
-        <div className="absolute inset-0" style={{ opacity: videoReady ? 1 : 0, transition: "opacity 0.5s ease" }}>
+        <div className="absolute inset-0">
           <VideoPlayer
             key={story.video.src}
             video={story.video}
