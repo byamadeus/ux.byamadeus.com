@@ -236,7 +236,7 @@ export function ProjectStories({
     } else {
       // Drawer just opened — reset to first story
       if (!wasOpen && isOpen) {
-        setVideoReady(!stories[0].video);
+        setVideoReady(true); // video already mounted+loaded, onLoaded won't re-fire
         setIdx(0);
         setAnimKey((k) => k + 1);
         idxRef.current = 0;
