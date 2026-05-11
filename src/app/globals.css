@@ -31,3 +31,9 @@ mux-player {
   border-radius: 12px;
   overflow: hidden;
 }
+
+/* When used as full-bleed fill (story bg, etc) */
+mux-player[style*="position: absolute"] {
+  aspect-ratio: unset;
+  border-radius: 0;
+}

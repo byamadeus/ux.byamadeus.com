@@ -111,7 +111,7 @@ function VideoPlayer({
     }
     if (video.type === "mux") {
       return (
-        <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
+        <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
           <MuxPlayer
             playbackId={video.src}
             streamType="on-demand"
@@ -122,7 +122,11 @@ function VideoPlayer({
             preload="auto"
             onLoadedMetadata={markLoaded}
             onCanPlay={markLoaded}
-            style={mediaStyle as React.CSSProperties & Record<string, string>}
+            style={{
+              position: "absolute", inset: 0,
+              width: "100%", height: "100%",
+              border: "none", pointerEvents: "none", display: "block",
+            } as React.CSSProperties & Record<string, string>}
           />
         </div>
       );
