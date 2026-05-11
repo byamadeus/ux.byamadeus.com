@@ -39,6 +39,14 @@ function deriveThumbnail(video: StoryVideo): string | null {
 
 function VideoPlayer({ video, gradient }: { video: StoryVideo; gradient?: string }) {
   const [loaded, setLoaded] = useState(false);
+  const fallbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    // iOS Safari often skips canplay/load events for HLS streams.
+    // Reveal video after 2.5s regardless so it doesn't stay invisible.
+    fallbackRef.current = setTimeout(() => setLoaded(true), 2500);
+    return () => { if (fallbackRef.current) clearTimeout(fallbackRef.current); };
+  }, []);
 
   const contain = video.fit === "contain";
   const aspectRatio = video.aspectRatio ?? (contain ? "9/16" : "16/9");
@@ -92,6 +100,7 @@ function VideoPlayer({ video, gradient }: { video: StoryVideo; gradient?: string
           muted
           loop
           playsInline
+          onLoadedMetadata={() => setLoaded(true)}
           onCanPlay={() => setLoaded(true)}
           style={{ ...mediaStyle, objectFit: "cover", ...fade }}
         />
@@ -104,6 +113,8 @@ function VideoPlayer({ video, gradient }: { video: StoryVideo; gradient?: string
           autoPlay="muted"
           muted
           loop
+          playsInline
+          onLoadedMetadata={() => setLoaded(true)}
           onCanPlay={() => setLoaded(true)}
           style={{ ...mediaStyle, ...fade }}
         />
