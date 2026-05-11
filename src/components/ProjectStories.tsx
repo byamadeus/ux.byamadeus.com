@@ -225,9 +225,25 @@ export function ProjectStories({
     return clearTimer;
   }, [videoReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const prevExternalPaused = useRef(externalPaused);
   useEffect(() => {
-    if (externalPaused) clearTimer();
-    else if (videoReady) startTimer(remainingRef.current);
+    const wasOpen = !prevExternalPaused.current;
+    const isOpen = !externalPaused;
+    prevExternalPaused.current = externalPaused;
+
+    if (externalPaused) {
+      clearTimer();
+    } else {
+      // Drawer just opened — reset to first story
+      if (!wasOpen && isOpen) {
+        setVideoReady(!stories[0].video);
+        setIdx(0);
+        setAnimKey((k) => k + 1);
+        idxRef.current = 0;
+      } else if (videoReady) {
+        startTimer(remainingRef.current);
+      }
+    }
   }, [externalPaused]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function pauseStory() {
