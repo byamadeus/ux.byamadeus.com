@@ -1,0 +1,23 @@
+# Next.js
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Build
+dist/
+
+# Env
+.env
+.env.local
+.env*.local
+
+# OS
+.DS_Store
+
+# TypeScript
+tsconfig.tsbuildinfo
+
+# Claude local settings
+.claude/settings.local.json

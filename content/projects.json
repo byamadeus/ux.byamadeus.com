@@ -1,0 +1,54 @@
+{
+  "projects": [
+    
+    {
+      "label": "Blaiscameron.com",
+      "url": "https://blaiscameron.com",
+      "video": { "type": "mux", "src": "I6DUXZ2MJ3E801MUk021jQkAFPixNrzHiCm5cKDyBHVe8", "fit": "contain", "aspectRatio": "16/9" },
+      "tags": ["Web", "Portfolio"],
+      "progress": 100,
+      "milestone": "LAUNCHED",
+      "gradient": "linear-gradient(150deg, #070c1a 0%, #0f2040 35%, #1a3a6b 65%, #2355a0 100%)",
+      "duration": 6000
+    },
+    {
+      "label": "AI Film Fest",
+      "url": "https://figs.byamadeus.com",
+      "video": { "type": "mux", "src": "BJrCkcrGiZNtxRNmszUTXr4pkBGoD3Kb5bz00QyFxz6Q", "fit": "contain", "aspectRatio": "16/9" },
+      "tags": ["Web", "AI"],
+      "progress": 100,
+      "milestone": "Submission brief received, scope locked",
+      "gradient": "linear-gradient(150deg, #1a0505 0%, #5c0f0f 35%, #a63000 65%, #e86a00 100%)",
+      "duration": 12000
+    },
+    {
+      "label": "Moviebeli",
+      "url": null,
+      "video": { "type": "mux", "src": "qIcSzryw2PD8N00IiolO700zEs5vVeQ6cEOScif01Nzz4s", "fit": "contain", "aspectRatio": "9/19.5" },
+      "tags": ["Mobile", "Stealth"],
+      "progress": 25,
+      "milestone": "Wrapping initial MVP for TestFlight cohort",
+      "gradient": "linear-gradient(150deg, #060412 0%, #1a0a3d 40%, #3d0f5c 70%, #6b1a9e 100%)",
+      "duration": 18000
+    },
+    {
+      "label": "Pivot",
+      "url": null,
+      "video": { "type": "mux", "src": "Y4wNZlRdSG4sGzrEX6YB02rIqUmUm8URzqTSjRqEW01tc", "fit": "contain", "aspectRatio": "9/19.5" },
+      "tags": ["Mobile", "Wellness"],
+      "progress": 20,
+      "milestone": "Concept validating with users on iOS shortcut features",
+      "gradient": "linear-gradient(150deg, #0d2b1a 0%, #1a5c3d 40%, #2d8c5a 70%, #4aac80 100%)",
+      "duration": 8000
+    },
+    {
+      "label": "World Cup for Diaspora",
+      "url": null,
+      "tags": ["Web", "Stealth"],
+      "progress": 50,
+      "milestone": "Functionality for Studio Project",
+      "gradient": "linear-gradient(150deg, #0a3d1f 0%, #1a6b35 35%, #c48a20 70%, #8b1a1a 100%)",
+      "duration": 6000
+    }
+  ]
+}

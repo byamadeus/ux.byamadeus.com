@@ -1,0 +1,85 @@
+{
+  "slug": "tfz",
+  "title": "Founding Designer for the Film Zone",
+  "label": "Film Zone Experience",
+  "year": "2025",
+  "role": "Founding Designer",
+  "status": "live",
+  "description": "I worked alongside the founder to execute a systematic and foundational design language that fit the 3 month sprint for launch.",
+  "thumbnail": "/images/cards/tfz.png",
+  "bg": "/images/bg/bg-01.png",
+  "heroMuxId": "AhuLSA5emb1fBylsuppWnRoWWgP7YCnlkSOJDT1mRkg",
+  "tags": [
+    "Startup",
+    "Mobile",
+    "Social"
+  ],
+  "intro": "The Film Zone is a social media startup based on film appreciation across platforms. I worked alongside  founder to execute a systematic and foundational design language that fit the 3 month sprint for launch.",
+  "sections": [
+    {
+      "type": "text",
+      "heading": "The Approach",
+      "body": "I designed a core flow of interactions, behaviors, and features that defined the next big movie recommendation application. Working alongside development and founder meant quick fixes, broad scope, and big ideas. "
+    },
+    {
+      "type": "video",
+      "heading": "",
+      "items": [
+        {
+          "muxId": "",
+          "caption": "",
+          "lottieFile": "/lottie/anim-frame--2-.json"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "heading": "The Strategy",
+      "body": "The strategy for the initial engagement of users was essential — we created a social-first film-watching experience, so that you'll never see another bad movie… unless your friends, curators, and famous people have bad taste. "
+    },
+    {
+      "type": "video",
+      "heading": "",
+      "items": [
+        {
+          "muxId": "",
+          "caption": "",
+          "lottieFile": "/lottie/anim-frame--1-.json"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "heading": "The Core",
+      "body": "Like all great ideas, we discovered the core interaction flow by playing. We decided to educate users through the onboarding experience, a light version of the main flow. This way our user knows exactly how to stamp and rate a film, the core element of our product."
+    },
+    {
+      "type": "video",
+      "heading": "",
+      "items": [
+        {
+          "muxId": "IDYb72G01FbM382WJaD5bhk2402CY7SJ4902HcFPUTeD3I",
+          "caption": ""
+        }
+      ]
+    },
+    {
+      "type": "metrics",
+      "heading": "Impact (testing in beta launch)",
+      "items": [
+        {
+          "label": "Balancing adoption and intuition",
+          "body": "Watching the onboarding experience, tracking dropoff, and where individuals stop filling out profile and tracking movies."
+        },
+        {
+          "label": "Initial engagement",
+          "body": "Testing core features of feed-based curation, as well as saving movies a user intends to watch."
+        },
+        {
+          "label": "Social proof and sharing",
+          "body": "Where users invite friends and family to the platform, and where these users follow through or drop off."
+        }
+      ]
+    }
+  ]
+}

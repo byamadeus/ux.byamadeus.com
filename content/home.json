@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "headline": "Vision-driven product designer",
+    "subline": "NYC-based / 0->1 Specialist / Mobile-first / Shipping with AI"
+  },
+  "philosophy": {
+    "intro": "the first step is always to",
+    "steps": [
+      {
+        "id": "absorb",
+        "label": "absorb",
+        "lottie": "/lottie/Absorb.json",
+        "description": "Before designing anything, I immerse myself in the problem space — users, constraints, and the culture around the product."
+      },
+      {
+        "id": "understand",
+        "label": "understand",
+        "lottie": "/lottie/Understand.json",
+        "description": "I map what I've absorbed into a clear picture of what matters, what's at stake, and where opportunity lives."
+      },
+      {
+        "id": "collab",
+        "label": "collaborate",
+        "lottie": "/lottie/Collab.json",
+        "description": "Great design is a team sport. I bring people in early and keep them close — engineers, PMs, founders, and users."
+      },
+      {
+        "id": "share",
+        "label": "share",
+        "lottie": "/lottie/Share.json",
+        "description": "I believe design only works when it spreads. I document, present, and evangelize so the team moves together."
+      }
+    ]
+  },
+  "cta": "Say something nice to me",
+  "ctaHref": "mailto:evanamadeuscameron@gmail.com"
+}

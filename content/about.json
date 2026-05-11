@@ -1,0 +1,104 @@
+{
+  "headline": "I'm Amadeus & I'm always trying something new.",
+  "image": "/images/about/CM24_Headshot_Website_UXDesigner_AmadeusCameron-reduced.png",
+  "bio": [
+    "Ask anyone — I'm a Product designer based in New York, and in the last year I picked up Salsa, Croatian, Guitar, & Running.",
+    "My skills are all connected, trust me."
+  ],
+  "skills": {
+    "heading": "Tools & Craft",
+    "items": [
+      "Product Strategy",
+      "Design Systems",
+      "Rapid Prototyping",
+      "Interaction Design",
+      "Figma",
+      "Claude Code",
+      "Lovable",
+      "Cursor (AI-Assisted Design)",
+      "Adobe Creative Cloud",
+      "Blender",
+      "Rhino 3D",
+      "Unreal Engine 5",
+      "HTML / CSS",
+      "Framer",
+      "React",
+      "Webflow",
+      "p5.js"
+    ]
+  },
+  "philosophy": [
+    {
+      "type": "text-image",
+      "heading": "I lead with vision.",
+      "body": "Growing up, I travelled across America performing concerts with my family where I learned that connections are forged through experiences, and honed with passion.",
+      "image": "/images/about/baby.jpg"
+    },
+    {
+      "type": "text-image",
+      "heading": "I explore everything I can.",
+      "body": "I believe the world has so much to offer, so much to experience. From testing the way that paper folds, to the languages we use to understand each other.",
+      "image": "/images/about/croatian.jpg"
+    },
+    {
+      "type": "text-image",
+      "heading": "Everything I do revolves around people.",
+      "body": "The communities that I have lead, been a part of, and connected with have given me the perspective I use everyday.",
+      "image": "/images/about/people.jpg",
+      "imagePosition": "center 15%"
+    }
+  ],
+  "resume": {
+    "heading": "Experience",
+    "roles": [
+      {
+        "title": "Product Designer",
+        "company": "Visual Logic",
+        "period": "Jun 2024 – Present",
+        "description": "Providing product strategy and design for clients including Viasat. Designed core advertising products for a global satellite provider serving 250M+ passengers annually."
+      },
+      {
+        "title": "Founding Designer",
+        "company": "The Film Zone",
+        "period": "Jan 2025 – May 2025",
+        "description": "Spearheaded end-to-end product strategy and design for a platform with 4M+ followers. Validated hypotheses through rapid prototyping to ensure market fit prior to launch."
+      },
+      {
+        "title": "UX Strategy & Interaction Designer",
+        "company": "Paramount+ x SCADpro",
+        "period": "Jan 2024 – Mar 2024",
+        "description": "Collaborated with the Head of Creative to design an interactive microsite that transformed fan engagement into actionable data for Paramount+ studios."
+      },
+      {
+        "title": "Experience & Tech Lead",
+        "company": "Mayo Clinic x SCADpro",
+        "period": "Jan 2023 – Mar 2023",
+        "description": "Led the UX rapid iteration process for patient experiences and managed web development for the final concept delivery."
+      }
+    ]
+  },
+  "education": {
+    "heading": "Education",
+    "items": [
+    
+      {
+        "title": "BFA UX Design",
+        "company": "SCAD — Savannah College of Art and Design",
+        "period": "Sep 2020 – Jun 2024",
+        "description": "Minor in Mobile and Interactive Design. Awarded 3x Red Dot, 5x Gold Indigo, and 1x European Product Design honors."
+      },
+      {
+        "title": "Co-President",
+        "company": "FLUX (UX) Club",
+        "period": "May 2021 – Jun 2024",
+        "description": "Led the largest UX community at SCAD, coordinating over 100 industry-focused events and growing membership to 300+."
+      },
+      {
+        "title": "Co-Director",
+        "company": "SCAD StartUp",
+        "period": "Nov 2021 – Feb 2022",
+        "description": "Directed a team of 11 to produce a week-long design competition with 350+ participants and $50k+ in industry sponsorship."
+      }
+    ]
+  }
+}

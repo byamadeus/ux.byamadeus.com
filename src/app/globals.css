@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-noto-sans);
+}
+
+html {
+  font-size: 18px;
+  font-weight: 500;
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #0a0a0a;
+  font-family: Noto Sans, Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  min-height: 100vh;
+  background: #f8f8f6;
+}
+
+@keyframes storyProgress {
+  from { width: 0% }
+  to { width: 100% }
+}
+
+/* Mux player skin reset */
+mux-player {
+  --media-object-fit: cover;
+  --controls: none;
+  border-radius: 12px;
+  overflow: hidden;
+}

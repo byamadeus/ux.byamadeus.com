@@ -1,0 +1,86 @@
+{
+  "slug": "viasat",
+  "title": "Designing new ad units for passengers, in-flight",
+  "label": "Viasat Ad Products",
+  "year": "2025",
+  "role": "Product Designer",
+  "status": "live",
+  "description": "As part of Visual Logic, I worked closely with the Viasat Ad Product team to design a suite of ad products for the near-term and long-term vision of the product.",
+  "thumbnail": "/images/cards/viasat.png",
+  "bg": "/images/bg/bg-02.png",
+  "heroMuxId": "V5MWtD55qYcWtDnKm8uEZiNPSXNRChb8sSSrEi39KfM",
+  "tags": [
+    "Enterprise",
+    "Advertising",
+    "In-Flight"
+  ],
+  "intro": "Viasat is a satellite internet provider that provides internet to 250 million passengers across 60+ airlines globally. As a UX Designer at Visual Logic, I worked with Viasat's advertising product team to build out their emerging product — advertising in-flight.",
+  "sections": [
+    {
+      "type": "text",
+      "heading": "The Approach",
+      "body": "As Viasat scales their ad product, brands and advertisers expect more and more capabilities.\n\nA survey unit offers a window to customer data that was previously impossible to collect in-flight. "
+    },
+    {
+      "type": "video",
+      "heading": "",
+      "items": [
+        {
+          "muxId": "",
+          "caption": "",
+          "lottieFile": "/lottie/survey-ux.json"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "heading": "The Data",
+      "body": "Advertisers often launch surveys in order to gather data on brand perception — so a survey unit folds in perfectly across Viasat's existing product as a premium offering to a campaign.\n\nThe survey unit's placement is at the critical moment in a captive audience's engagement: the waiting period before connecting. "
+    },
+    {
+      "type": "video",
+      "heading": "",
+      "items": [
+        {
+          "muxId": "",
+          "caption": "",
+          "lottieFile": "/lottie/stats.json"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "heading": "The Solution",
+      "body": "Through testing, the value of the passenger data increases with how easy it is to use — if there's a clear path forward, passengers are more likely to be honest in responses, rather than rage clicking their way through and compromising data."
+    },
+    {
+      "type": "video",
+      "heading": "",
+      "items": [
+        {
+          "muxId": "",
+          "caption": "",
+          "lottieFile": "/lottie/advertiser-data.json"
+        }
+      ]
+    },
+    {
+      "type": "metrics",
+      "heading": "Impact",
+      "items": [
+        {
+          "label": "Increased potential revenue",
+          "body": "Premium 'add-on' framework for existing advertising products, creating a new high-tier inventory for airline partners."
+        },
+        {
+          "label": "Boosted passenger engagement",
+          "body": "Interactive, choice-based ad unit as a high-performance alternative to traditional video-driven experiences."
+        },
+        {
+          "label": "Matured targeting data",
+          "body": "Survey-focused ad unit generating actionable user insights that drive future content and product development."
+        }
+      ]
+    }
+  ]
+}

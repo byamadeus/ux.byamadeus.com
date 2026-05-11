@@ -1,0 +1,15 @@
+{
+  "slug": "echo",
+  "title": "Echo",
+  "label": "Echo",
+  "year": "2025",
+  "role": "project lead",
+  "status": "placeholder",
+  "description": "coming soon",
+  "thumbnail": "/images/cards/echo.png",
+  "bg": "/images/bg/bg-03.png",
+  "heroMuxId": null,
+  "tags": [],
+  "intro": "",
+  "sections": []
+}
