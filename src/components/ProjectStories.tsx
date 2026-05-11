@@ -38,11 +38,7 @@ function deriveThumbnail(video: StoryVideo): string | null {
   return null;
 }
 
-function VideoPlayer({
-  video,
-  gradient,
-  onLoaded,
-}: {
+function VideoPlayer({ video, gradient, onLoaded }: {
   video: StoryVideo;
   gradient?: string;
   onLoaded?: () => void;
@@ -51,11 +47,8 @@ function VideoPlayer({
   const fallbackRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // iOS Safari: React's muted prop doesn't always set the HTML attribute.
-    // Find the underlying <video> and set it imperatively.
     const vid = containerRef.current?.querySelector("video");
     if (vid) vid.muted = true;
-
     fallbackRef.current = setTimeout(() => onLoaded?.(), 3000);
     return () => { if (fallbackRef.current) clearTimeout(fallbackRef.current); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -73,8 +66,7 @@ function VideoPlayer({
     <div style={{ ...abs, overflow: "hidden" }}>
       {thumbnail ? (
         <img
-          src={thumbnail}
-          alt=""
+          src={thumbnail} alt=""
           style={{
             width: "110%", height: "110%", objectFit: "cover",
             marginLeft: "-5%", marginTop: "-5%",
@@ -97,31 +89,31 @@ function VideoPlayer({
   }
 
   function renderMedia() {
+    const objectFit = contain ? "contain" : "cover";
+
     if (video.type === "local") {
       return (
         <video
-          src={video.src}
-          autoPlay muted loop playsInline
-          preload="auto"
-          onLoadedMetadata={markLoaded}
-          onCanPlay={markLoaded}
-          style={{ ...mediaStyle, objectFit: "cover" }}
+          src={video.src} autoPlay muted loop playsInline preload="auto"
+          onLoadedMetadata={markLoaded} onCanPlay={markLoaded}
+          style={{ ...mediaStyle, objectFit }}
         />
       );
     }
+
     if (video.type === "mux") {
       return (
-        <div ref={containerRef} className="story-mux" style={{ width: "100%", height: "100%", display: "flex" }}>
+        <div
+          ref={containerRef}
+          className={contain ? "story-mux story-mux-contain" : "story-mux"}
+          style={{ width: "100%", height: "100%", display: "flex" }}
+        >
           <MuxPlayer
             playbackId={video.src}
             streamType="on-demand"
             autoPlay="muted"
-            muted
-            loop
-            playsInline
-            preload="auto"
-            onLoadedMetadata={markLoaded}
-            onCanPlay={markLoaded}
+            muted loop playsInline preload="auto"
+            onLoadedMetadata={markLoaded} onCanPlay={markLoaded}
             style={{
               width: "100%", height: "100%",
               display: "block", border: "none", pointerEvents: "none", flexShrink: 0,
@@ -130,37 +122,39 @@ function VideoPlayer({
         </div>
       );
     }
+
+    // iframes don't support object-fit — use aspect-ratio wrapper for contain
     let src = video.src;
     if (video.type === "youtube") {
       src = `https://www.youtube.com/embed/${video.src}?autoplay=1&mute=1&loop=1&playlist=${video.src}&controls=0&rel=0&modestbranding=1`;
     } else if (video.type === "vimeo") {
       src = `https://player.vimeo.com/video/${video.src}?autoplay=1&muted=1&loop=1&background=1`;
     }
-    return (
-      <iframe
-        src={src}
-        allow="autoplay; encrypted-media"
-        onLoad={markLoaded}
-        style={mediaStyle}
-      />
-    );
+
+    if (contain) {
+      return (
+        <div style={{ ...abs, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <iframe
+            src={src} allow="autoplay; encrypted-media" onLoad={markLoaded}
+            style={{ aspectRatio, height: "100%", maxWidth: "100%", width: "auto", border: "none", pointerEvents: "none", display: "block" }}
+          />
+        </div>
+      );
+    }
+
+    return <iframe src={src} allow="autoplay; encrypted-media" onLoad={markLoaded} style={mediaStyle} />;
   }
 
+  // Contain: blurred bg fills container, media on top with object-fit:contain (bars are transparent)
   if (contain) {
     return (
       <>
         {blurredBg}
-        <div style={{ ...abs, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{
-            maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto",
-            aspectRatio, position: "relative", overflow: "hidden", flexShrink: 0,
-          }}>
-            {renderMedia()}
-          </div>
-        </div>
+        <div style={abs}>{renderMedia()}</div>
       </>
     );
   }
+
   return <div style={abs}>{renderMedia()}</div>;
 }
 
@@ -183,10 +177,7 @@ function ProgressBar({ progress }: { progress: number }) {
 }
 
 export function ProjectStories({
-  stories,
-  defaultDuration = 5000,
-  onClose,
-  paused: externalPaused = false,
+  stories, defaultDuration = 5000, onClose, paused: externalPaused = false,
 }: ProjectStoriesProps) {
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -201,6 +192,7 @@ export function ProjectStories({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pausedRef = useRef(false);
   const downTimeRef = useRef<number | null>(null);
+  const downPosRef = useRef<{ x: number; y: number } | null>(null);
   const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const story = stories[idx];
@@ -214,8 +206,7 @@ export function ProjectStories({
     if (newIdx >= stories.length) { onClose?.(); return; }
     if (newIdx < 0) return;
     clearTimer();
-    const hasVideo = !!stories[newIdx].video;
-    setVideoReady(!hasVideo);
+    setVideoReady(!stories[newIdx].video);
     setIdx(newIdx);
     setAnimKey((k) => k + 1);
   }
@@ -227,7 +218,6 @@ export function ProjectStories({
     timerRef.current = setTimeout(() => { goTo(idxRef.current + 1); }, remaining);
   }
 
-  // Start timer only when video is ready
   useEffect(() => {
     if (!videoReady || externalPaused) return;
     remainingRef.current = duration;
@@ -236,11 +226,8 @@ export function ProjectStories({
   }, [videoReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (externalPaused) {
-      clearTimer();
-    } else if (videoReady) {
-      startTimer(remainingRef.current);
-    }
+    if (externalPaused) clearTimer();
+    else if (videoReady) startTimer(remainingRef.current);
   }, [externalPaused]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function pauseStory() {
@@ -259,8 +246,9 @@ export function ProjectStories({
     startTimer(remainingRef.current);
   }
 
-  function handlePointerDown() {
+  function handlePointerDown(e: React.PointerEvent<HTMLDivElement>) {
     downTimeRef.current = Date.now();
+    downPosRef.current = { x: e.clientX, y: e.clientY };
     holdTimerRef.current = setTimeout(() => {
       holdTimerRef.current = null;
       pauseStory();
@@ -270,8 +258,18 @@ export function ProjectStories({
   function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
     if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
     const downTime = downTimeRef.current ?? Date.now();
+    const downPos = downPosRef.current;
     const held = Date.now() - downTime > 150;
     downTimeRef.current = null;
+    downPosRef.current = null;
+
+    // Swipe down to close
+    if (downPos) {
+      const deltaY = e.clientY - downPos.y;
+      const deltaX = Math.abs(e.clientX - downPos.x);
+      if (deltaY > 72 && deltaX < 80) { onClose?.(); return; }
+    }
+
     if (held) {
       resumeStory();
     } else {
@@ -302,7 +300,7 @@ export function ProjectStories({
         style={{ background: story.gradient ?? "linear-gradient(150deg, #1a1a2e 0%, #16213e 100%)" }}
       />
 
-      {/* Video layer — always opacity 1, gradient shows through until video fires onLoaded */}
+      {/* Video layer */}
       {story.video && (
         <div className="absolute inset-0" style={{ opacity: videoReady ? 1 : 0, transition: "opacity 0.5s ease" }}>
           <VideoPlayer
@@ -326,7 +324,6 @@ export function ProjectStories({
           {stories.map((_, i) => (
             <div key={i} className="flex-1 h-[2px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.28)" }}>
               {i < idx && <div className="h-full w-full rounded-full bg-white" />}
-              {/* Only animate when video is ready */}
               {i === idx && videoReady && !externalPaused && (
                 <div
                   key={animKey}
@@ -377,10 +374,7 @@ export function ProjectStories({
           <div className="flex items-start justify-between gap-4 w-full">
             {story.subtitle && (
               <p className="text-sm leading-relaxed text-left" style={{ color: "rgba(255,255,255,0.55)" }}>
-                <span
-                  className="font-mono tracking-widest mr-2"
-                  style={{ fontSize: "9px", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}
-                >
+                <span className="font-mono tracking-widest mr-2" style={{ fontSize: "9px", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>
                   LOG:
                 </span>
                 {story.subtitle}
@@ -388,9 +382,7 @@ export function ProjectStories({
             )}
             {story.url && (
               <a
-                href={story.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={story.url} target="_blank" rel="noopener noreferrer"
                 onPointerDown={(e) => e.stopPropagation()}
                 onPointerUp={(e) => e.stopPropagation()}
                 className="flex items-center gap-1 text-xs font-semibold whitespace-nowrap shrink-0 transition-colors"
@@ -412,10 +404,7 @@ export function ProjectStories({
       {/* Pause indicator */}
       {paused && (
         <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-          <div
-            className="w-14 h-14 rounded-full flex items-center justify-center"
-            style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
-          >
+          <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}>
             <div className="flex gap-1.5">
               <div className="w-[3px] h-6 bg-white rounded-full" />
               <div className="w-[3px] h-6 bg-white rounded-full" />

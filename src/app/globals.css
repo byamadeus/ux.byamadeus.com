@@ -32,8 +32,15 @@ mux-player {
   overflow: hidden;
 }
 
-/* Full-bleed story context — no radius, no intrinsic aspect ratio */
+/* Full-bleed story context */
 .story-mux mux-player {
   aspect-ratio: unset;
   border-radius: 0;
+}
+
+/* Contain mode — object-fit contain, transparent bars so blurred bg shows */
+.story-mux-contain mux-player {
+  --media-object-fit: contain;
+  --media-background-color: transparent;
+  background: transparent;
 }
