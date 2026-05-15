@@ -40,15 +40,6 @@
       "milestone": "Concept validating with users on iOS shortcut features",
       "gradient": "linear-gradient(150deg, #0d2b1a 0%, #1a5c3d 40%, #2d8c5a 70%, #4aac80 100%)",
       "duration": 8000
-    },
-    {
-      "label": "World Cup for Diaspora",
-      "url": null,
-      "tags": ["Web", "Stealth"],
-      "progress": 50,
-      "milestone": "Functionality for Studio Project",
-      "gradient": "linear-gradient(150deg, #0a3d1f 0%, #1a6b35 35%, #c48a20 70%, #8b1a1a 100%)",
-      "duration": 6000
     }
   ]
 }
